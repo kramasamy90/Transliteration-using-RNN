@@ -7,18 +7,26 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 class WordDataset(Dataset):
+    '''
+    Reads an input CSV files containing word-pairs written in roman script and tamil script.
+    Stores the words in onehot representation.
+    '''
     def __init__(self, file = 'tam_train.csv'):
         self.file = file
         self.xy_str = np.loadtxt(self.file, delimiter=',', dtype=str, encoding='utf8')
         self.num_samples = self.xy_str.shape[0]
         self.x_str = self.xy_str[:, 0]
         self.y_str = self.xy_str[:, 1]
+        self.get_onehot_encoding_x()
+        self.get_onehot_encoding_y()
     
     def __getitem__(self, i):
-        return self.x_str[i], self.y_str[i]
+        return self.x_onehot[i], self.y_onehot[i]
 
     def __len__(self):
         return self.num_samples
+
+    ## Functions for onehot encoding of English words.
 
     def encode_eng_char(self, c):
         encoding = torch.zeros(128).view(1, 128)
@@ -69,9 +77,11 @@ class WordDataset(Dataset):
     
     def get_onehot_encoding_x(self):
         self.x_onehot = torch.zeros(self.num_samples, 50, 128)
-        for i in tqdm(range(self.num_samples)):
+        for i in tqdm(range(self.num_samples), desc = 'Encoding English Words...'):
             self.x_onehot[i] = self.encode_eng_word(self.x_str[i])
  
+    ## Functions for onehot encoding of Tamil words.
+
     def encode_tam_char(self, c):
         encoding = torch.zeros(128).view(1, 128)
         if(c == '$'):
@@ -122,5 +132,5 @@ class WordDataset(Dataset):
 
     def get_onehot_encoding_y(self):
         self.y_onehot = torch.zeros(self.num_samples, 50, 128)
-        for i in tqdm(range(self.num_samples)):
+        for i in tqdm(range(self.num_samples), desc='Encoding Tamil Words...'):
             self.y_onehot[i] = self.encode_tam_word(self.y_str[i])
