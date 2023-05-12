@@ -29,7 +29,7 @@ class WordDataset(Dataset):
     ## Functions for onehot encoding of English words.
 
     def encode_eng_char(self, c):
-        encoding = torch.zeros(128).view(1, 128)
+        encoding = torch.zeros(128, dtype=torch.int32).view(1, 128)
         if(c == '$'):
             encoding[0][127] = 1
         elif (c == '.'):
@@ -55,7 +55,7 @@ class WordDataset(Dataset):
                 Each row corresponds to onehot encoding of a character.
         '''
         i = 0
-        encoding = torch.zeros(50, 128)
+        encoding = torch.zeros(50, 128, dtype=torch.int32)
         while i < len(word):
             encoding[i] = self.encode_eng_char(word[i])
             i += 1
@@ -76,14 +76,14 @@ class WordDataset(Dataset):
         return word
     
     def get_onehot_encoding_x(self):
-        self.x_onehot = torch.zeros(self.num_samples, 50, 128)
+        self.x_onehot = torch.zeros(self.num_samples, 50, 128, dtype=torch.int32)
         for i in tqdm(range(self.num_samples), desc = 'Encoding English Words...'):
             self.x_onehot[i] = self.encode_eng_word(self.x_str[i])
  
     ## Functions for onehot encoding of Tamil words.
 
     def encode_tam_char(self, c):
-        encoding = torch.zeros(128).view(1, 128)
+        encoding = torch.zeros(128, dtype=torch.int32).view(1, 128)
         if(c == '$'):
             encoding[0][127] = 1
         elif (c == '.'):
@@ -109,7 +109,7 @@ class WordDataset(Dataset):
                 Each row corresponds to onehot encoding of a character.
         '''
         i = 0
-        encoding = torch.zeros(50, 128)
+        encoding = torch.zeros(50, 128, dtype=torch.int32)
         while i < len(word):
             encoding[i] = self.encode_tam_char(word[i])
             i += 1
@@ -131,6 +131,6 @@ class WordDataset(Dataset):
 
 
     def get_onehot_encoding_y(self):
-        self.y_onehot = torch.zeros(self.num_samples, 50, 128)
+        self.y_onehot = torch.zeros(self.num_samples, 50, 128, dtype=torch.int32)
         for i in tqdm(range(self.num_samples), desc='Encoding Tamil Words...'):
             self.y_onehot[i] = self.encode_tam_word(self.y_str[i])
