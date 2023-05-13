@@ -23,7 +23,14 @@ class EncoderRNN(nn.Module):
         self.bidir = bidir
 
         self.embedding = nn.Embedding(self.input_size, embedding_size)
-        self.RNN = nn.RNN(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+
+        if (cell_type == 'rnn'):
+            self.RNN = nn.RNN(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+        elif (cell_type == 'lstm'):
+            self.RNN = nn.LSTM(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+        elif (cell_type == 'gru'):
+            self.RNN = nn.GRU(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+
         self.initialize_hidden()
     
     def forward(self, input):
@@ -51,7 +58,14 @@ class DecoderRNN(nn.Module):
         self.dropout = dropout
 
         self.embedding = nn.Embedding(self.input_size, self.embedding_size)
-        self.RNN = nn.RNN(input_size=self.embedding_size, hidden_size=self.hidden_size, num_layers=self.num_layers, bidirectional = self.bidir, dropout = self.dropout)
+
+        if (cell_type == 'rnn'):
+            self.RNN = nn.RNN(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+        elif (cell_type == 'lstm'):
+            self.RNN = nn.LSTM(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+        elif (cell_type == 'gru'):
+            self.RNN = nn.GRU(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
+
         self.out = nn.Linear(self.hidden_size, self.output_size)
         self.out_act = nn.LogSoftmax()
         self.initialize_hidden()
