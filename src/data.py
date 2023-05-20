@@ -87,7 +87,7 @@ class WordDataset(Dataset):
         if(c == '$'):
             encoding[0][127] = 1
         elif (c == '.'):
-            encoding[0][0] = 1
+            encoding[0][126] = 1
         else:
             encoding[0][ord(c) - 0xb80] = 1
         return encoding
