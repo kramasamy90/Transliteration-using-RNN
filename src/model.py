@@ -35,7 +35,7 @@ class EncoderRNN(nn.Module):
     
     def forward(self, input):
         embedded = self.embedding(torch.where(input == 1)[0])
-        output, hidden = self.RNN(embedded, self.hidden)
+        output, hidden = self.RNN(embedded)
         return output, hidden
 
     def initialize_hidden(self):
@@ -67,21 +67,13 @@ class DecoderRNN(nn.Module):
             self.RNN = nn.GRU(input_size=embedding_size, hidden_size=hidden_size, num_layers=num_layers, bidirectional = bidir, dropout = dropout)
 
         self.out = nn.Linear(self.hidden_size, self.output_size)
-        self.out_act = nn.LogSoftmax()
-        self.initialize_hidden()
+        # self.out_act = nn.LogSoftmax()
+        self.out_act = nn.Softmax()
 
     def forward(self, input, hidden):
         embedded = self.embedding(torch.where(input == 1)[0])
         embedded = F.relu(embedded)
-        output, hidden = self.RNN(embedded, self.hidden)
+        output, hidden = self.RNN(embedded, hidden)
         output = self.out(output)
-        print(output.shape)
-        print(hidden.shape)
         output = self.out_act(output)
         return output, hidden
-    
-    def initialize_hidden(self):
-        if(self.bidir):
-            self.hidden = torch.zeros(2 * self.num_layers * self.hidden_size).view(2 * self.num_layers, self.hidden_size)
-        else:
-            self.hidden = torch.zeros(self.num_layers * self.hidden_size).view(self.num_layers, self.hidden_size)
