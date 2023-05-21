@@ -58,12 +58,10 @@ def train_one_iter(x, y, encoder, decoder, encoder_optim, decoder_optim, criteri
 
     return loss.item()
 
-def train(dataset, learning_rate = 0.01, n_iters = 1000):
+def train(dataset, encoder, decoder, learning_rate = 0.01, n_iters = 1000):
     # encoder = EncoderRNN(cell_type='lstm', embedding_size=32, hidden_size=32, num_layers=1, bidir= True)
     # decoder = DecoderRNN(cell_type='lstm', embedding_size= 32, hidden_size= 32, num_layers= 1, bidir=True)
 
-    encoder = EncoderRNN(cell_type='gru')
-    decoder = DecoderRNN(cell_type='gru')
 
     encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=learning_rate)
